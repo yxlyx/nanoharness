@@ -193,7 +193,15 @@ jobs:
         run: cargo test --release --locked -p harness-engine --test workspace_files
       - name: Auth integration tests
         run: cargo test --release --locked -p harness-engine --test auth
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.17.0
+      - name: Build native visual validator
+        working-directory: apps/nano
+        run: zig build -Doptimize=ReleaseSafe cli
       - name: Native visual publication regressions
+        env:
+          HARNESS_ZIG_CLI: ${{ github.workspace }}/apps/nano/zig-out/bin/harness.exe
         run: cargo test --release --locked -p harness-engine --test show_visual
 
   tests:
